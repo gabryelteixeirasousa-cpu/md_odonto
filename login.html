@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login de Colaboradores | MD Odontologia</title>
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="auth-page">
+
+  <main class="auth-wrapper">
+    <section class="auth-card">
+      <a href="index.html" class="auth-brand">
+        <span class="auth-logo">MD</span>
+
+        <span>
+          <strong>MD Odontologia</strong>
+          <small>Área de colaboradores</small>
+        </span>
+      </a>
+
+      <div class="auth-heading">
+        <span class="eyebrow">Acesso restrito</span>
+        <h1>Entrar no sistema</h1>
+        <p>
+          Utilize o seu e-mail e palavra-passe cadastrados pela clínica.
+        </p>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="seuemail@clinica.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Palavra-passe</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Digite a sua palavra-passe"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="submit" class="primary-button">
+          Entrar
+        </button>
+
+        <p id="loginError" class="form-error" role="alert"></p>
+      </form>
+
+      <a href="index.html" class="back-link">
+        ← Voltar ao site público
+      </a>
+    </section>
+  </main>
+
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>
