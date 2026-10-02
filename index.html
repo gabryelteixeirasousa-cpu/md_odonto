@@ -17,6 +17,7 @@
       --text: #2b1d33;
       --muted: #6b5a72;
       --white: #ffffff;
+      --rot: 0deg;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -46,6 +47,32 @@
 
     a { color: inherit; text-decoration: none; }
 
+    /* ---------- Barra de progresso da rolagem ---------- */
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    /* ---------- Brilho que acompanha o dedo ---------- */
+    .glow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 120px; height: 120px;
+      margin: -60px 0 0 -60px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 207, 122, .5), rgba(201, 162, 39, 0) 70%);
+      opacity: 0;
+      transition: opacity .35s;
+      pointer-events: none;
+      z-index: 90;
+    }
+
     /* ---------- Cabeçalho ---------- */
     .header {
       position: fixed;
@@ -67,9 +94,10 @@
       height: 56px;
     }
 
-    .brand { display: flex; align-items: center; gap: 10px; color: var(--white); }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--white); }
 
     .brand-logo {
+      position: relative;
       width: 38px; height: 38px;
       border-radius: 50%;
       background: var(--white);
@@ -80,6 +108,16 @@
       font-size: 14px;
       letter-spacing: .5px;
       border: 2px solid var(--gold);
+    }
+
+    /* anel dourado que gira conforme você rola a página */
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--gold-light);
+      transform: rotate(var(--rot));
     }
 
     .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
@@ -164,6 +202,7 @@
     .drawer.open a.nav-link:nth-child(2) { transition-delay: .14s; }
     .drawer.open a.nav-link:nth-child(3) { transition-delay: .20s; }
     .drawer.open a.nav-link:nth-child(4) { transition-delay: .26s; }
+    .drawer.open a.nav-link:nth-child(5) { transition-delay: .32s; }
 
     .drawer a.nav-link:active,
     .drawer a.nav-link.active { color: var(--gold-light); padding-left: 16px; }
@@ -203,6 +242,22 @@
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
       color: var(--plum-dark);
       box-shadow: 0 8px 20px rgba(201, 162, 39, .35);
+    }
+
+    /* faixa de brilho que passa pelo botão dourado */
+    .btn-gold::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.6s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%, 55% { left: -80%; }
+      100% { left: 140%; }
     }
 
     .btn-outline {
@@ -252,7 +307,34 @@
       50% { transform: translate(20px, 30px) scale(1.12); }
     }
 
+    /* estrelinhas que piscam no fundo */
+    .spark {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: var(--gold-light);
+      clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+      animation: twinkle 3s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); }
+      50% { opacity: .9; transform: scale(1.3) rotate(90deg); }
+    }
+
     .hero-content { position: relative; z-index: 2; }
+
+    .hero-content > * { animation: rise .9s cubic-bezier(.2, .8, .2, 1) both; }
+    .hero-content > *:nth-child(1) { animation-delay: .1s; }
+    .hero-content > *:nth-child(2) { animation-delay: .25s; }
+    .hero-content > *:nth-child(3) { animation-delay: .4s; }
+    .hero-content > *:nth-child(4) { animation-delay: .55s; }
+    .hero-content > *:nth-child(5) { animation-delay: .7s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(34px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .eyebrow {
       display: inline-block;
@@ -273,7 +355,17 @@
       margin-bottom: 14px;
     }
 
-    .hero h1 em { font-style: normal; color: var(--gold-light); }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold-light), #fff, var(--gold-light));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textshine 4s linear infinite;
+    }
+
+    @keyframes textshine { to { background-position: 200% center; } }
 
     .hero p {
       font-size: 15px;
@@ -299,6 +391,33 @@
       color: rgba(255, 255, 255, .9);
     }
 
+    .scroll-hint {
+      position: absolute;
+      bottom: 18px; left: 50%;
+      width: 22px; height: 36px;
+      margin-left: -11px;
+      border: 2px solid rgba(255, 255, 255, .5);
+      border-radius: 14px;
+      z-index: 2;
+    }
+
+    .scroll-hint::after {
+      content: "";
+      position: absolute;
+      top: 6px; left: 50%;
+      width: 4px; height: 8px;
+      margin-left: -2px;
+      border-radius: 2px;
+      background: var(--gold-light);
+      animation: wheel 1.8s ease-in-out infinite;
+    }
+
+    @keyframes wheel {
+      0% { opacity: 0; transform: translateY(0); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(14px); }
+    }
+
     /* ---------- Seções ---------- */
     section { padding: 56px 20px; }
 
@@ -313,6 +432,18 @@
       margin-bottom: 8px;
     }
 
+    .section-head h2::after {
+      content: "";
+      display: block;
+      width: 0; height: 3px;
+      margin-top: 8px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width .8s ease .3s;
+    }
+
+    .section-head.visible h2::after { width: 56px; }
+
     .section-head p { color: var(--muted); font-size: 14.5px; }
 
     /* ---------- Tratamentos (acordeão) ---------- */
@@ -324,10 +455,7 @@
       box-shadow: 0 4px 16px rgba(74, 29, 86, .1);
       overflow: hidden;
       border: 1px solid #f0e4f3;
-      transition: transform .15s;
     }
-
-    .acc-item:active { transform: scale(.985); }
 
     .acc-button {
       width: 100%;
@@ -354,6 +482,14 @@
       background: linear-gradient(135deg, var(--plum), #7a3a8a);
       color: var(--gold-light);
       font-size: 13px;
+    }
+
+    .acc-item.open .acc-number { animation: pop .5s ease; }
+
+    @keyframes pop {
+      0% { transform: scale(1) rotate(0); }
+      50% { transform: scale(1.25) rotate(12deg); }
+      100% { transform: scale(1) rotate(0); }
     }
 
     .acc-title { flex: 1; }
@@ -395,10 +531,7 @@
       background: var(--white);
       border-radius: 18px;
       box-shadow: 0 4px 16px rgba(74, 29, 86, .1);
-      transition: transform .2s;
     }
-
-    .team-card:active { transform: scale(.97); }
 
     .avatar {
       flex: 0 0 auto;
@@ -413,8 +546,99 @@
       border: 3px solid var(--gold);
     }
 
+    .team-card.visible .avatar { animation: spinIn 1s cubic-bezier(.2, .8, .2, 1) both; }
+
+    @keyframes spinIn {
+      from { opacity: 0; transform: rotate(-200deg) scale(.3); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+
+    @keyframes spin360 {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+
+    .team-card .avatar.spin { animation: spin360 .8s ease; }
+
     .team-card h3 { font-size: 16.5px; color: var(--plum); }
     .team-card p { font-size: 13.5px; color: var(--muted); }
+
+    /* ---------- Convênios ---------- */
+    .plans-wrap { margin: 0 -20px; }
+
+    .plans-scroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 10px 20px 22px;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 0 20px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .plans-scroll::-webkit-scrollbar { display: none; }
+
+    .plan-card {
+      flex: 0 0 62%;
+      max-width: 240px;
+      scroll-snap-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      padding: 24px 16px;
+      background: var(--white);
+      border: 1px solid #f0e4f3;
+      border-radius: 20px;
+      box-shadow: 0 8px 22px rgba(74, 29, 86, .12);
+      transition: transform .12s linear, opacity .12s linear;
+    }
+
+    .plan-badge {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--plum), #8a4a9a);
+      color: var(--gold-light);
+      font-size: 24px;
+      font-weight: 800;
+      border: 3px solid var(--gold);
+    }
+
+    .plan-card.gold .plan-badge {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: var(--plum-dark);
+    }
+
+    .plan-card strong { font-size: 16px; color: var(--plum); }
+    .plan-card span.small { font-size: 12.5px; color: var(--muted); }
+
+    .swipe-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .swipe-hint i {
+      display: inline-block;
+      font-style: normal;
+      color: var(--gold);
+      font-size: 18px;
+      animation: nudge 1.4s ease-in-out infinite;
+    }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateX(-4px); }
+      50% { transform: translateX(8px); }
+    }
+
+    .plans-note { margin-top: 14px; font-size: 13px; color: var(--muted); text-align: center; }
 
     /* ---------- Contato ---------- */
     .contact-list { display: flex; flex-direction: column; gap: 12px; }
@@ -428,10 +652,7 @@
       border: 1px solid #f0e4f3;
       border-radius: 16px;
       box-shadow: 0 4px 14px rgba(74, 29, 86, .08);
-      transition: transform .15s, border-color .2s;
     }
-
-    .contact-card:active { transform: scale(.97); border-color: var(--gold); }
 
     .contact-icon {
       flex: 0 0 auto;
@@ -501,11 +722,22 @@
     /* ---------- Revelar ao rolar ---------- */
     .reveal {
       opacity: 0;
-      transform: translateY(26px);
-      transition: opacity .6s ease, transform .6s ease;
+      transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1);
+      transition-delay: var(--d, 0ms);
     }
 
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal.from-left { transform: translateX(-46px); }
+    .reveal.from-right { transform: translateX(46px); }
+    .reveal.zoom { transform: scale(.88); }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* depois de aparecer, o cartão responde rápido ao toque */
+    .reveal.done {
+      transition: transform .18s ease-out, box-shadow .2s, opacity .2s;
+      transition-delay: 0ms;
+    }
 
     /* ---------- Telas maiores ---------- */
     @media (min-width: 760px) {
@@ -515,15 +747,23 @@
       .hero-actions { flex-direction: row; max-width: 520px; }
       .team-list, .contact-list { display: grid; grid-template-columns: 1fr 1fr; }
       .accordion { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+      .plans-wrap { margin: 0; }
+      .plans-scroll { flex-wrap: wrap; justify-content: center; overflow: visible; padding: 10px 0 22px; }
+      .plan-card { flex: 0 0 200px; }
+      .swipe-hint { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .reveal { opacity: 1; transform: none; }
+      .hero-content > * { opacity: 1; }
     }
   </style>
 </head>
 <body>
+
+  <div class="progress" id="progress"></div>
+  <div class="glow" id="glow"></div>
 
   <header class="header" id="header">
     <a href="#inicio" class="brand">
@@ -545,6 +785,7 @@
     <a class="nav-link" href="#inicio">Início</a>
     <a class="nav-link" href="#tratamentos">Tratamentos</a>
     <a class="nav-link" href="#equipe">Nossa equipe</a>
+    <a class="nav-link" href="#convenios">Convênios</a>
     <a class="nav-link" href="#contato">Onde estamos</a>
 
     <a class="btn btn-gold" href="https://wa.me/5531986444879?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20consulta." target="_blank" rel="noopener">
@@ -556,10 +797,17 @@
 
   <main>
     <section class="hero" id="inicio">
-      <div class="blob one"></div>
-      <div class="blob two"></div>
+      <div class="blob one" id="blobOne"></div>
+      <div class="blob two" id="blobTwo"></div>
 
-      <div class="hero-content">
+      <span class="spark" style="left: 12%; top: 22%; animation-delay: 0s;"></span>
+      <span class="spark" style="left: 78%; top: 16%; animation-delay: .8s;"></span>
+      <span class="spark" style="left: 88%; top: 48%; animation-delay: 1.6s;"></span>
+      <span class="spark" style="left: 22%; top: 70%; animation-delay: 2.2s;"></span>
+      <span class="spark" style="left: 62%; top: 78%; animation-delay: 1.1s;"></span>
+      <span class="spark" style="left: 6%; top: 46%; animation-delay: 2.7s;"></span>
+
+      <div class="hero-content" id="heroContent">
         <span class="eyebrow">Coronel Fabriciano · MG</span>
         <h1>Cuidado especializado para o seu <em>sorriso</em></h1>
         <p>Atendimento acolhedor, tecnologia e profissionais dedicados a deixar o seu tratamento simples e sem medo.</p>
@@ -578,6 +826,8 @@
           <span>Prótese</span>
         </div>
       </div>
+
+      <div class="scroll-hint"></div>
     </section>
 
     <section id="tratamentos">
@@ -587,8 +837,8 @@
         <p>Toque em cada item para saber mais.</p>
       </div>
 
-      <div class="accordion reveal">
-        <div class="acc-item">
+      <div class="accordion">
+        <div class="acc-item reveal from-left">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">01</span>
             <span class="acc-title">Cirurgias</span>
@@ -597,7 +847,7 @@
           <div class="acc-body"><div><p>Procedimentos cirúrgicos orais com planejamento cuidadoso e foco no seu conforto e na recuperação tranquila.</p></div></div>
         </div>
 
-        <div class="acc-item">
+        <div class="acc-item reveal from-right">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">02</span>
             <span class="acc-title">Ortodontia (aparelho)</span>
@@ -606,7 +856,7 @@
           <div class="acc-body"><div><p>Alinhamento dos dentes e correção da mordida para adultos e crianças, com acompanhamento regular.</p></div></div>
         </div>
 
-        <div class="acc-item">
+        <div class="acc-item reveal from-left">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">03</span>
             <span class="acc-title">Endodontia (canal)</span>
@@ -615,7 +865,7 @@
           <div class="acc-body"><div><p>Tratamento de canal para aliviar a dor e salvar o dente, com técnica atual e atendimento cuidadoso.</p></div></div>
         </div>
 
-        <div class="acc-item">
+        <div class="acc-item reveal from-right">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">04</span>
             <span class="acc-title">Implantes</span>
@@ -624,7 +874,7 @@
           <div class="acc-body"><div><p>Reposição de dentes perdidos com implantes, devolvendo função, firmeza e naturalidade ao sorriso.</p></div></div>
         </div>
 
-        <div class="acc-item">
+        <div class="acc-item reveal from-left">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">05</span>
             <span class="acc-title">Estética</span>
@@ -633,7 +883,7 @@
           <div class="acc-body"><div><p>Clareamento, facetas e harmonização do sorriso para você se sentir ainda mais confiante.</p></div></div>
         </div>
 
-        <div class="acc-item">
+        <div class="acc-item reveal from-right">
           <button class="acc-button" type="button" aria-expanded="false">
             <span class="acc-number">06</span>
             <span class="acc-title">Prótese</span>
@@ -648,12 +898,12 @@
       <div class="section-head reveal">
         <span class="eyebrow">Equipe</span>
         <h2>Quem cuida de você</h2>
-        <p>Profissionais que atendem com carinho e atenção a cada detalhe.</p>
+        <p>Profissionais que atendem com carinho e atenção a cada detalhe. Toque no círculo para ver ele girar.</p>
       </div>
 
       <div class="team-list">
         <!-- Para adicionar outra pessoa, copie um bloco "team-card" e altere letra e nome -->
-        <div class="team-card reveal">
+        <div class="team-card reveal zoom">
           <div class="avatar">M</div>
           <div>
             <h3>Dra. Míriam</h3>
@@ -661,7 +911,15 @@
           </div>
         </div>
 
-        <div class="team-card reveal">
+        <div class="team-card reveal zoom">
+          <div class="avatar">A</div>
+          <div>
+            <h3>Dra. Ana Luísa</h3>
+            <p>Cirurgiã-dentista</p>
+          </div>
+        </div>
+
+        <div class="team-card reveal zoom">
           <div class="avatar">D</div>
           <div>
             <h3>Dra. Daniela</h3>
@@ -669,6 +927,52 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section id="convenios">
+      <div class="section-head reveal">
+        <span class="eyebrow">Convênios</span>
+        <h2>Planos que atendemos</h2>
+        <p>Use o seu plano ou, se preferir, o atendimento particular.</p>
+      </div>
+
+      <div class="plans-wrap reveal">
+        <div class="plans-scroll" id="plans">
+          <div class="plan-card">
+            <span class="plan-badge">O</span>
+            <strong>Odontoprev</strong>
+            <span class="small">Plano odontológico</span>
+          </div>
+
+          <div class="plan-card">
+            <span class="plan-badge">U</span>
+            <strong>Unimed</strong>
+            <span class="small">Plano de saúde</span>
+          </div>
+
+          <div class="plan-card">
+            <span class="plan-badge">A</span>
+            <strong>Abertta Saúde</strong>
+            <span class="small">Plano de saúde</span>
+          </div>
+
+          <div class="plan-card">
+            <span class="plan-badge">B</span>
+            <strong>Bradesco</strong>
+            <span class="small">Plano de saúde</span>
+          </div>
+
+          <div class="plan-card gold">
+            <span class="plan-badge">P</span>
+            <strong>Particular</strong>
+            <span class="small">Atendimento sem convênio</span>
+          </div>
+        </div>
+
+        <div class="swipe-hint"><span>Deslize para o lado</span><i>→</i></div>
+      </div>
+
+      <p class="plans-note reveal">A cobertura varia conforme o seu plano. Chame no WhatsApp para confirmar o seu procedimento.</p>
     </section>
 
     <section id="contato">
@@ -679,7 +983,7 @@
       </div>
 
       <div class="contact-list">
-        <a class="contact-card reveal" href="https://wa.me/5531986444879?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20consulta." target="_blank" rel="noopener">
+        <a class="contact-card reveal from-left" href="https://wa.me/5531986444879?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20consulta." target="_blank" rel="noopener">
           <span class="contact-icon">WA</span>
           <span>
             <strong>WhatsApp</strong>
@@ -687,7 +991,7 @@
           </span>
         </a>
 
-        <a class="contact-card reveal" href="tel:+5531986444879">
+        <a class="contact-card reveal from-right" href="tel:+5531986444879">
           <span class="contact-icon">TEL</span>
           <span>
             <strong>Ligar agora</strong>
@@ -695,7 +999,7 @@
           </span>
         </a>
 
-        <a class="contact-card reveal" href="https://www.instagram.com/m.d.odontologiaespecializada/" target="_blank" rel="noopener">
+        <a class="contact-card reveal from-left" href="https://www.instagram.com/m.d.odontologiaespecializada/" target="_blank" rel="noopener">
           <span class="contact-icon">IG</span>
           <span>
             <strong>Instagram</strong>
@@ -703,7 +1007,7 @@
           </span>
         </a>
 
-        <a class="contact-card reveal" href="https://www.google.com/maps/search/?api=1&query=Rua+Pedro+Nolasco+91+Coronel+Fabriciano+MG" target="_blank" rel="noopener">
+        <a class="contact-card reveal from-right" href="https://www.google.com/maps/search/?api=1&query=Rua+Pedro+Nolasco+91+Coronel+Fabriciano+MG" target="_blank" rel="noopener">
           <span class="contact-icon">MAP</span>
           <span>
             <strong>Como chegar</strong>
@@ -712,7 +1016,7 @@
         </a>
       </div>
 
-      <div class="hours reveal">
+      <div class="hours reveal zoom">
         <strong>Horário de atendimento</strong>
         Segunda a sexta, das 8h às 18h<br>
         Sábado, das 8h às 12h
@@ -731,11 +1035,21 @@
 
   <script>
     (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var root = document.documentElement;
+
       var header = document.getElementById("header");
       var menuButton = document.getElementById("menuButton");
       var drawer = document.getElementById("drawer");
       var overlay = document.getElementById("overlay");
+      var progress = document.getElementById("progress");
+      var glow = document.getElementById("glow");
+      var blobOne = document.getElementById("blobOne");
+      var blobTwo = document.getElementById("blobTwo");
+      var heroContent = document.getElementById("heroContent");
+      var plans = document.getElementById("plans");
 
+      /* ---------- Menu ---------- */
       function setMenu(open) {
         drawer.classList.toggle("open", open);
         overlay.classList.toggle("open", open);
@@ -759,14 +1073,40 @@
         if (event.key === "Escape") setMenu(false);
       });
 
-      /* Cabeçalho muda ao rolar */
-      function onScroll() {
-        header.classList.toggle("scrolled", window.scrollY > 20);
-      }
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
+      /* ---------- Efeitos ligados à rolagem ---------- */
+      var ticking = false;
 
-      /* Acordeão dos tratamentos */
+      function frame() {
+        var y = window.scrollY;
+        var max = root.scrollHeight - window.innerHeight;
+
+        progress.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0) + ")";
+        header.classList.toggle("scrolled", y > 20);
+
+        if (!reduce) {
+          root.style.setProperty("--rot", (y * 0.45) + "deg");
+
+          if (y < window.innerHeight * 1.2) {
+            blobOne.style.translate = "0 " + (y * 0.3) + "px";
+            blobTwo.style.translate = "0 " + (-y * 0.18) + "px";
+            heroContent.style.translate = "0 " + (y * 0.22) + "px";
+            heroContent.style.opacity = Math.max(0, 1 - y / (window.innerHeight * 0.85));
+          }
+        }
+
+        ticking = false;
+      }
+
+      window.addEventListener("scroll", function () {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(frame);
+        }
+      }, { passive: true });
+
+      frame();
+
+      /* ---------- Acordeão dos tratamentos ---------- */
       document.querySelectorAll(".acc-button").forEach(function (button) {
         button.addEventListener("click", function () {
           var item = button.parentElement;
@@ -784,7 +1124,7 @@
         });
       });
 
-      /* Efeito de toque (ondulação) nos botões */
+      /* ---------- Onda ao tocar nos botões ---------- */
       document.querySelectorAll(".btn").forEach(function (button) {
         button.addEventListener("pointerdown", function (event) {
           var rect = button.getBoundingClientRect();
@@ -799,25 +1139,32 @@
         });
       });
 
-      /* Aparecer suavemente ao rolar */
+      /* ---------- Aparecer ao rolar (com atraso em sequência) ---------- */
       var revealItems = document.querySelectorAll(".reveal");
+
+      revealItems.forEach(function (item) {
+        var index = Array.prototype.indexOf.call(item.parentElement.children, item);
+        item.style.setProperty("--d", (index % 4) * 90 + "ms");
+      });
 
       if ("IntersectionObserver" in window) {
         var revealObserver = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              revealObserver.unobserve(entry.target);
+              var element = entry.target;
+              element.classList.add("visible");
+              setTimeout(function () { element.classList.add("done"); }, 1100);
+              revealObserver.unobserve(element);
             }
           });
         }, { threshold: 0.12 });
 
         revealItems.forEach(function (item) { revealObserver.observe(item); });
       } else {
-        revealItems.forEach(function (item) { item.classList.add("visible"); });
+        revealItems.forEach(function (item) { item.classList.add("visible", "done"); });
       }
 
-      /* Destaca no menu a seção que está na tela */
+      /* ---------- Destaque da seção atual no menu ---------- */
       var navLinks = drawer.querySelectorAll("a.nav-link");
 
       if ("IntersectionObserver" in window) {
@@ -835,6 +1182,82 @@
           sectionObserver.observe(section);
         });
       }
+
+      /* ---------- Brilho que acompanha o dedo ---------- */
+      function moveGlow(event) {
+        if (reduce || event.pointerType !== "touch") return;
+        glow.style.transform = "translate(" + event.clientX + "px," + event.clientY + "px)";
+        glow.style.opacity = "1";
+      }
+
+      function hideGlow() { glow.style.opacity = "0"; }
+
+      document.addEventListener("pointerdown", moveGlow);
+      document.addEventListener("pointermove", moveGlow);
+      document.addEventListener("pointerup", hideGlow);
+      document.addEventListener("pointercancel", hideGlow);
+
+      /* ---------- Cartões que inclinam seguindo o dedo (ou o mouse) ---------- */
+      if (!reduce) {
+        document.querySelectorAll(".team-card, .contact-card, .acc-item").forEach(function (card) {
+          card.addEventListener("pointermove", function (event) {
+            var rect = card.getBoundingClientRect();
+            var x = (event.clientX - rect.left) / rect.width - 0.5;
+            var y = (event.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform =
+              "perspective(700px) rotateX(" + (-y * 10) + "deg) rotateY(" + (x * 12) + "deg) scale(.98)";
+          });
+
+          ["pointerup", "pointerleave", "pointercancel"].forEach(function (name) {
+            card.addEventListener(name, function () { card.style.transform = ""; });
+          });
+        });
+      }
+
+      /* ---------- Avatar gira ao tocar ---------- */
+      document.querySelectorAll(".team-card").forEach(function (card) {
+        card.addEventListener("click", function () {
+          var avatar = card.querySelector(".avatar");
+          avatar.classList.remove("spin");
+          void avatar.offsetWidth;
+          avatar.classList.add("spin");
+        });
+      });
+
+      /* ---------- Carrossel de convênios: o cartão do centro cresce ---------- */
+      var planCards = plans.querySelectorAll(".plan-card");
+      var planTicking = false;
+
+      function updatePlans() {
+        var canScroll = plans.scrollWidth > plans.clientWidth + 2;
+        var box = plans.getBoundingClientRect();
+        var center = box.left + box.width / 2;
+
+        planCards.forEach(function (card) {
+          if (!canScroll || reduce) {
+            card.style.transform = "";
+            card.style.opacity = "";
+            return;
+          }
+
+          var rect = card.getBoundingClientRect();
+          var distance = Math.min(1, Math.abs(rect.left + rect.width / 2 - center) / (box.width / 2));
+          card.style.transform = "scale(" + (1 - distance * 0.1) + ")";
+          card.style.opacity = 1 - distance * 0.35;
+        });
+
+        planTicking = false;
+      }
+
+      plans.addEventListener("scroll", function () {
+        if (!planTicking) {
+          planTicking = true;
+          requestAnimationFrame(updatePlans);
+        }
+      }, { passive: true });
+
+      window.addEventListener("resize", updatePlans);
+      updatePlans();
     })();
   </script>
 </body>
