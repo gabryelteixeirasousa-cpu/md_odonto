@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Painel Administrativo | MD Odontologia</title>
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <span class="auth-logo">MD</span>
+
+      <div>
+        <strong>MD Odontologia</strong>
+        <small>Painel interno</small>
+      </div>
+    </div>
+
+    <div class="user-area">
+      <span id="currentUserName"></span>
+      <span id="currentUserRole" class="role-badge"></span>
+
+      <button id="logoutButton" class="logout-button">
+        Sair
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <button class="sidebar-button active" data-section="overview">
+        Visão geral
+      </button>
+
+      <button class="sidebar-button" data-section="appointments">
+        Agendamentos
+      </button>
+
+      <button class="sidebar-button" data-section="patients">
+        Pacientes
+      </button>
+
+      <button class="sidebar-button" data-section="maintenance">
+        Alertas de prevenção
+      </button>
+
+      <button
+        class="sidebar-button dentist-only"
+        data-section="clinical"
+      >
+        Prontuários clínicos
+      </button>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <section id="overviewSection" class="dashboard-section active">
+        <div class="page-heading">
+          <span class="eyebrow">Painel</span>
+          <h1 id="welcomeTitle">Bem-vindo(a)</h1>
+          <p>
+            Consulte a agenda, os pacientes e os alertas da clínica.
+          </p>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card">
+            <span>Consultas de hoje</span>
+            <strong id="todayAppointmentsCount">0</strong>
+          </article>
+
+          <article class="metric-card">
+            <span>Total de pacientes</span>
+            <strong id="patientsCount">0</strong>
+          </article>
+
+          <article class="metric-card">
+            <span>Limpezas a vencer</span>
+            <strong id="maintenanceCount">0</strong>
+          </article>
+
+          <article class="metric-card dentist-only">
+            <span>Agenda pessoal</span>
+            <strong id="personalAppointmentsCount">0</strong>
+          </article>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Próximos atendimentos</h2>
+            <button class="text-button" data-section-link="appointments">
+              Ver agenda
+            </button>
+          </div>
+
+          <div id="overviewAppointments" class="appointment-list"></div>
+        </div>
+      </section>
+
+      <section id="appointmentsSection" class="dashboard-section">
+        <div class="page-heading">
+          <span class="eyebrow">Agenda</span>
+          <h1>Agendamentos</h1>
+          <p>
+            Consulte e altere os atendimentos conforme o seu perfil.
+          </p>
+        </div>
+
+        <div class="toolbar">
+          <div class="form-group">
+            <label for="appointmentDate">Data</label>
+            <input type="date" id="appointmentDate">
+          </div>
+
+          <button id="newAppointmentButton" class="primary-button">
+            Novo agendamento
+          </button>
+        </div>
+
+        <div id="appointmentsList" class="dashboard-card appointment-list"></div>
+      </section>
+
+      <section id="patientsSection" class="dashboard-section">
+        <div class="page-heading">
+          <span class="eyebrow">Cadastro</span>
+          <h1>Pacientes</h1>
+          <p>
+            Consulte os dados administrativos dos pacientes.
+          </p>
+        </div>
+
+        <div class="toolbar">
+          <input
+            id="patientSearch"
+            class="search-input"
+            type="search"
+            placeholder="Pesquisar por nome ou telefone"
+          >
+
+          <button id="newPatientButton" class="primary-button">
+            Novo paciente
+          </button>
+        </div>
+
+        <div id="patientsList" class="dashboard-card patient-list"></div>
+      </section>
+
+      <section id="maintenanceSection" class="dashboard-section">
+        <div class="page-heading">
+          <span class="eyebrow">Prevenção</span>
+          <h1>Alertas de manutenção</h1>
+          <p>
+            Pacientes cuja última limpeza ocorreu há seis meses ou mais.
+          </p>
+        </div>
+
+        <div id="maintenanceList" class="dashboard-card patient-list"></div>
+      </section>
+
+      <section id="clinicalSection" class="dashboard-section dentist-only">
+        <div class="page-heading">
+          <span class="eyebrow">Área clínica</span>
+          <h1>Prontuários clínicos</h1>
+          <p>
+            Registos clínicos disponíveis exclusivamente para dentistas.
+          </p>
+        </div>
+
+        <div class="dashboard-card">
+          <form id="clinicalNoteForm" class="internal-form">
+            <div class="form-group">
+              <label for="clinicalPatientId">Paciente</label>
+              <select id="clinicalPatientId" required>
+                <option value="">Selecione um paciente</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="clinicalProcedure">
+                Procedimento realizado
+              </label>
+              <input
+                id="clinicalProcedure"
+                type="text"
+                placeholder="Ex.: restauração, limpeza, canal"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="clinicalNotes">
+                Observações clínicas
+              </label>
+              <textarea
+                id="clinicalNotes"
+                rows="6"
+                placeholder="Descreva o atendimento clínico..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="primary-button">
+              Guardar registo clínico
+            </button>
+
+            <p id="clinicalMessage" class="form-message"></p>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="modalContainer"></div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
